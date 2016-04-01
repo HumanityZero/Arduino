@@ -1,0 +1,138 @@
+int latchPin = 2;
+int dataPin = 3;
+int clockPin = 4;
+int TIAW = 2;
+int C1 = 9;
+int C2 = 10;
+int C3 = 11;
+int C4 = 12;
+int dot = 13;
+
+void setup() {
+  pinMode(latchPin, OUTPUT);
+  pinMode(dataPin, OUTPUT);
+  pinMode(clockPin, OUTPUT);
+  pinMode(C1, OUTPUT);
+  pinMode(C2, OUTPUT);
+  pinMode(C3, OUTPUT);
+  pinMode(C4, OUTPUT);
+  pinMode(dot, OUTPUT);
+  Serial.begin(115200);
+  
+
+}
+
+void loop() {
+  int Time = millis()/100;
+  short ones, tens, hundreds, thousands;
+
+ones = (Time%10);
+tens = ((Time/10)%10);
+hundreds = ((Time/100)%10);
+thousands = (Time/1000);
+for(int i=1;i<=5;i++){
+  if(i == 1){
+    readout(thousands,1);
+  }
+  if(i == 2){
+    readout(hundreds,2);
+  }
+  if(i == 3){
+    readout(tens,3);
+  }
+  if(i == 4){
+    readout(ones,4);
+  }
+
+  
+}
+
+
+  
+
+
+}
+
+void readout(int number, int input_digit){
+  delay(TIAW);
+  digitalWrite(C1, LOW);
+  digitalWrite(C2, LOW);
+  digitalWrite(C3, LOW);
+  digitalWrite(C4, LOW);
+  digitalWrite(dot,HIGH);
+  convertBin(number);
+  pinCheck(input_digit);
+
+  
+}
+
+
+void pinCheck(int input_number){
+  if(input_number==1){
+    digitalWrite(C1, HIGH);
+    digitalWrite(C2, LOW);
+    digitalWrite(C3, LOW);
+    digitalWrite(C4, LOW);
+    digitalWrite(dot,HIGH);
+  }
+  if(input_number==2){
+    digitalWrite(C1, LOW);
+    digitalWrite(C2, HIGH);
+    digitalWrite(C3, LOW);
+    digitalWrite(C4, LOW);
+    digitalWrite(dot,HIGH);
+  }
+  if(input_number==3){
+    digitalWrite(C1, LOW);
+    digitalWrite(C2, LOW);
+    digitalWrite(C3, HIGH);
+    digitalWrite(C4, LOW);
+    digitalWrite(dot,LOW);
+  }
+  if(input_number==4){
+    digitalWrite(C1, LOW);
+    digitalWrite(C2, LOW);
+    digitalWrite(C3, LOW);
+    digitalWrite(C4, HIGH);
+    digitalWrite(dot,HIGH);
+  }
+}
+
+void convertBin(int convNum){
+  Serial.print(convNum);
+  Serial.print("   ");
+  digitalWrite(latchPin, LOW);
+  if(convNum==0){
+    shiftOut(dataPin, clockPin, MSBFIRST, 64);//( dataPin, clockpin, data)
+  }
+  if(convNum==1){
+    shiftOut(dataPin, clockPin, MSBFIRST, 121);//( dataPin, clockpin, data)
+  }
+  if(convNum==2){
+    shiftOut(dataPin, clockPin, MSBFIRST, 36);//( dataPin, clockpin, data)
+  }
+  if(convNum==3){
+    shiftOut(dataPin, clockPin, MSBFIRST, 48);//( dataPin, clockpin, data)
+  }
+  if(convNum==4){
+    shiftOut(dataPin, clockPin, MSBFIRST, 25);//( dataPin, clockpin, data)
+  }
+  if(convNum==5){
+    shiftOut(dataPin, clockPin, MSBFIRST, 18);//( dataPin, clockpin, data)
+  }
+  if(convNum==6){
+    shiftOut(dataPin, clockPin, MSBFIRST, 2);//( dataPin, clockpin, data)
+  }
+  if(convNum==7){
+    shiftOut(dataPin, clockPin, MSBFIRST, 120);//( dataPin, clockpin, data)
+  }
+  if(convNum==8){
+    shiftOut(dataPin, clockPin, MSBFIRST, 0);//( dataPin, clockpin, data)
+  }
+  if(convNum==9){
+    shiftOut(dataPin, clockPin, MSBFIRST, 24);//( dataPin, clockpin, data)
+  }
+  digitalWrite(latchPin, HIGH);
+}
+
+
