@@ -1,0 +1,62 @@
+const int Green = 3;
+const int Yellow =  4;
+const int Red = 5;
+const int Buzzer = 8;
+
+int led = Green;
+int ledState = LOW;
+unsigned long previousMillis = 0;
+int interval = 8000;
+float previousHours = 0;
+float currentHours = 0;
+const int MaxTime = 12;
+const int WarningTime = 8;
+
+void setup() {
+  pinMode(Red, OUTPUT);
+  pinMode(Yellow, OUTPUT);
+  pinMode(Green, OUTPUT);
+  pinMode(Buzzer, OUTPUT);
+  
+  digitalWrite(Red, HIGH);
+  delay(1000);
+  digitalWrite(Red, LOW);
+  digitalWrite(Yellow, HIGH);
+  delay(1000);
+  digitalWrite(Yellow, LOW);
+  digitalWrite(Green, HIGH);
+  digitalWrite(Buzzer, HIGH);
+  delay(500);
+  digitalWrite(Green, LOW);
+  digitalWrite(Buzzer,LOW);
+}
+
+void loop() {
+  unsigned long currentMillis = millis();
+  currentHours = (millis()/3600000);
+  if (currentMillis - previousMillis >= interval) {
+    previousMillis = currentMillis;
+    if (ledState == LOW) {
+      ledState = HIGH;
+	  interval = abs(pow((currentHours-2),3));
+    } else {
+      ledState = LOW;
+	  interval = (800*pow((currentHours+5),-2))*1000;
+    }
+    digitalWrite(led, ledState);
+  }
+  //TESTS:
+  if (((currentHours - previousHours) >= 0.35 && led == Red)){
+	previousHours = currentHours;
+	digitalWrite(Buzzer, HIGH);
+    delay(currentHours*50);
+    digitalWrite(Buzzer, LOW);
+  }
+  if(currentHours >= WarningTime && currentHours < MaxTime && led == Green){
+    led = Yellow;
+  }
+  if(currentHours >= MaxTime && led == Yellow){
+    led = Red;
+  }
+  delay(20);
+}
